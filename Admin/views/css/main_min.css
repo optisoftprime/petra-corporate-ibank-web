@@ -1,0 +1,392 @@
+@font-face {
+    font-family: "Frank";
+    src: url(../font/Frank-Regular.eot) format("embedded-opentype"), url(font/Frank-Light.woff) format("woff"), url(font/Frank-Regular.ttf) format("truetype");
+    font-style: normal;
+    font-weight: 400
+}
+
+@font-face {
+    font-family: "Circular";
+    src: url(../font/Circular-Book.eot) format("embedded-opentype"), url(font/Circular-Book.woff) format("woff"), url(font/Circular-Book.ttf) format("truetype"), url(font/Circular-Book.svg) format("svg");
+    font-style: normal;
+    font-weight: 400
+}
+
+@font-face {
+    font-family: circ;
+    src: url(../font/circBook.ttf) format("truetype");
+    font-weight: 400;
+    font-style: normal
+}
+
+@font-face {
+    font-family: circ;
+    src: url(../font/circMedium.ttf) format("truetype");
+    font-weight: 500;
+    font-style: normal
+}
+
+@font-face {
+    font-family: circ;
+    src: url(../font/circBold.ttf) format("truetype");
+    font-weight: 600;
+    font-style: normal
+}
+
+
+@font-face {
+    font-family: IkasType;
+    src: url(../font/ikas-typeface-400.woff2) format("woff2"), url(font/ikas-typeface-400.woff) format("woff");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap
+}
+
+@font-face {
+    font-family: IkasType;
+    src: url(../font/ikas-typeface-600.woff2) format("woff2"), url(font/ikas-typeface-600.woff) format("woff");
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap
+}
+
+@font-face {
+    font-family: IkasType;
+    src: url(../font/ikas-typeface-500.woff2) format("woff2"), url(font/ikas-typeface-500.woff) format("woff");
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap
+}
+html,
+body {
+    /* font-family: circ,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Open Sans,Helvetica Neue,sans-serif; */
+    font-family: IkasType, circ, 'Montserrat', 'Lato' !important;
+    font-size: 1rem !important;
+    background-color: #eef4fb !important;
+    height: 100%;
+}
+
+.bg-darkblue {
+    background-color: #0075ff;
+}
+
+.bg-grey {
+    background-color: #eef4fb;
+}
+
+.form-div {
+    width: 75%;
+}
+
+.form-group {
+    margin-bottom: 20px !important
+}
+
+.form-control {
+    /* border-top-right-radius: 5px !important;
+    border-bottom-right-radius: 5px !important;
+    height: 45px !important; */
+    font-size: 13px !important;
+    border: 1.5px solid #d6d6d6 !important
+}
+
+.sidebar{
+    height: 100%;
+    width:300px;
+    background-color:#FFF;transition: all 0.5s  ease-in-out;
+    border-right: 1px solid #d4dbe3;
+}
+.bg-defoult{
+    background-color:#fff;
+}
+.fliph .sidebar>ul{
+    padding: 30px !important;
+}
+.sidebar>ul{
+    padding: 14px 0 120px 0 !important;
+}
+.sidebar ul{
+    list-style:none;
+    margin:0px;
+    padding: 0px;
+    clear: both;
+    margin-bottom: 16px;
+}
+
+.sidebar li a,.sidebar li a.collapsed.active{
+    display:block;
+    padding: 9px 20px;
+    color:#708daa;
+    border-left:0px solid #708daa;
+    text-decoration:none;
+    margin-bottom: 5px;
+    font-size: 15px;
+    line-height: 1.5;
+    font-weight: 400;
+}
+
+.fliph li a{
+    text-align: center;
+}
+
+.fliph li .sub-menu a{
+    text-align: left !important;
+}
+
+.fliph li a.active{
+    background-color:#f3f9ff;
+    /* border-left:0 !important; */
+    transition: all 0.5s  ease-in-out;
+    padding: 9px 0;
+    /* border-radius: 10px; */
+}
+
+.sidebar li a.active{
+    /* background-color:#f3f9ff; */
+    border-left:5px solid #0075ff; transition: all 0.5s  ease-in-out;
+    color: #0075ff;
+
+}
+
+.sidebar li a:hover{border-left:5px solid #0075ff; color: #0075ff !important;}
+
+.fliph li a i{
+    /* padding-left: 12px; */
+    padding-right: 0 !important;
+}
+.fliph li a.active { 
+    padding-right:5px;
+    border-left: #0075ff 5px solid;
+    /* padding-left: 20px; */
+    color: #0075ff;
+}
+
+.sidebar li a i{ padding-right: 20px;}
+
+.sidebar ul li .sub-menu li a{ 
+    position:relative;
+    margin-bottom: 0 !important;
+    font-size: 12px; 
+    font-weight: 400;
+}
+.sidebar ul li .sub-menu li a:before{
+    font-family: FontAwesome;
+    content: " ";
+    display: inline-block;
+    padding-left: 0px;
+    padding-right: 10px;
+    vertical-align: middle;
+}
+.sidebar ul li .sub-menu li a:hover:after {
+    content: "";
+    position: absolute;
+    left: -5px;
+    top: 0;
+    width: 5px;
+    background-color: #0075ff;
+    height: 100%;
+    border-radius: 5px;
+}
+.sidebar ul li .sub-menu li a:hover{ background-color:#222; padding-left:20px; transition: all 0.5s  ease-in-out}
+/* .sub-menu{ border-left:5px solid #dedede;} */
+.sidebar li a .nav-label,.sidebar li a .nav-label+span{ transition: all 0.5s  ease-in-out}
+	
+
+.sidebar.fliph li a .nav-label,.sidebar.fliph li a .nav-label+span{ display:none;transition: all 0.5s  ease-in-out}
+.sidebar.fliph {
+    width: 70px;
+    transition: all 0.5s  ease-in-out;
+   
+}
+	
+.sidebar.fliph li{ position:relative}
+.sidebar.fliph .sub-menu {
+    position: absolute;
+    left: 75px;
+    top: 0;
+    background-color: #fff;
+    width: 200px;
+    z-index: 100;
+    border-radius: 5px;
+}
+
+.user-panel .logo {   
+    font-size: 28px;
+    color: #FFF;
+    text-align: center;
+    border: #fff 2px solid;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    margin: 10px auto;
+}
+
+.user-panel {
+    clear: left;
+    display: block;
+    /* float: left; */
+}
+.user-panel>.image>img {
+    width: 100%;
+    max-width: 45px;
+    height: auto;
+}
+.user-panel> div>.info,
+.user-panel> div a,
+.user-panel>div>.info a {
+    color: #fff;
+    text-decoration: none;
+}
+.user-panel>div>.info p {
+    font-weight: 400;
+    margin-bottom: 9px;
+    font-size: 28px;
+    font-weight: 400;
+}
+.fliph .user-panel {
+    padding: 2px;
+}
+
+.user-panel {
+    background-color: #0075ff;
+    clear: left;
+    display: block;
+    float: left;
+    width: 100%;
+    /* margin-bottom: 15px; */
+    padding: 15px;
+    /* border-bottom: 1px solid; */
+}
+.user-panel>div>.info {
+    /* padding: 5px 5px 5px 15px; */
+    /* line-height: 1; */
+    /* position: absolute;
+    left: 55px; */
+}
+
+.fliph .user-panel .logo-name{ display: none; }
+
+.fliph .menu-icon {
+    float: none;
+    text-align: center;
+    font-size: 24px;
+    padding: 14px;
+}
+
+.menu-icon {
+    float: right;
+    font-size: 20px;
+}
+.bg-grey-2 {
+    background-color: #eff4fa;
+}
+
+.profile-div {
+    background-color: #eff4fa;
+    border-top: 1px solid #d4dbe3;
+    border-right: 1px solid #d4dbe3;
+    width: 300px;
+}
+
+.fliph .profile-header .no-show {
+    display: none;
+}
+
+.fliph .profile-div {
+    width: 70px;
+}
+
+.profile-header {
+    padding-right: 20px;
+    padding-left: 25px;
+    justify-content: space-between;
+    color: #708daa;
+    height: 82px;
+}
+
+.profile-header div .name {
+    font-size: 15px;
+    color: #043d75;
+    font-weight: 500;
+}
+
+.profile-header div .title {
+    font-weight: 500;
+    font-size: 15px; 
+}
+
+.collapsed div .title {
+    display: none;
+}
+
+.profile-div ul {
+    position: relative;
+    margin-bottom: 30px !important;
+    margin-top: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #708daa;
+}
+
+.profile-div ul li {
+    display: block;
+    padding-left: 25px;
+    color: #708daa;
+}
+
+.fliph .profile-div ul {
+    margin-bottom: 10px !important;
+    padding: 16px 0;
+    bottom: 5px;
+    top: auto !important;
+}
+
+.fliph .profile-div >ul a {
+    text-align: left !important;
+}
+
+.profile-div a:hover {
+    text-decoration: none;
+    color: #708daa;
+}
+
+.profile-div .sub-menu li a {
+    padding: 2px;
+}
+
+@media only screen and (min-width:650px) and (max-width:768px) {
+    .container {
+        width: 650px !important
+    }
+
+    .display-3 {
+        font-size: 3.5rem !important;
+    }
+    .form-div {
+        width: 75%;
+    }
+}
+
+@media only screen and (min-width:480px) and (max-width :650px) {
+    .container {
+        width: 470px !important
+    }
+    .display-3 {
+        font-size: 3.5rem !important;
+    }
+    .form-div {
+        width: 75%;
+    }
+}
+
+@media only screen and (max-width :480px) {
+    .container {
+        width: 100% !important
+    }
+    .display-3 {
+        font-size: 3rem !important;
+    }
+    .form-div {
+        width: 100%;
+    }
+}

@@ -1,0 +1,106 @@
+# Local verification / development stack. Database/all.sql carries both the
+# dbPetra and Admin schemas, with real data in both — see
+# docker/db/02-missing-schema.sql for the schemas the dump does NOT create, and
+# docker/db/03-seed-local-dev-admin.sql for local-only test data loaded on
+# top of the real, empty schema. redis holds the per-login session/encryption
+# key (class.User.php's redis()/startSession()/getSession()) — CoreFront
+# only, Admin's session handling is
+# unrelated native PHP sessions. Not the production orchestration (see
+# docker-stack.yml for that) — this exists to run both apps against a real
+# database for local development and testing.
+#
+# corefront and admin both build by cloning secondcaesar-apps/petra-corporate-ibank
+# at build time (GIT_REF, default `main`) rather than copying
+# the local working tree — this stack now tests the same "pull source from
+# git" deployment profile a real deploy would use, not just local edits.
+# Building requires the buildx CLI plugin (BuildKit secrets for the clone
+# token) and a GITHUB_TOKEN in .env with at least read access to that repo.
+
+services:
+  db:
+    image: mariadb:10.5
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - ./Database/all.sql:/docker-entrypoint-initdb.d/00-dbpetra-dump.sql:ro
+      - ./docker/db/02-missing-schema.sql:/docker-entrypoint-initdb.d/02-missing-schema.sql:ro
+      - ./docker/db/03-seed-local-dev-admin.sql:/docker-entrypoint-initdb.d/03-seed-local-dev-admin.sql:ro
+      - ./docker/db/04-seed-local-dev-customer.sql:/docker-entrypoint-initdb.d/04-seed-local-dev-customer.sql:ro
+      - petra_db_data:/var/lib/mysql
+    ports:
+      - "13306:3306"
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  mailpit:
+    image: axllent/mailpit
+    restart: unless-stopped
+    ports:
+      - "18025:8025"   # web UI, for inspecting sent mail
+      - "11025:1025"   # SMTP
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "16379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  corefront:
+    build:
+      context: .
+      dockerfile: docker/corefront/Dockerfile
+      args:
+        GIT_REF: ${GIT_REF:-main}
+        CACHEBUST: ${CACHEBUST:-unknown}
+      secrets:
+        - github_token
+    restart: unless-stopped
+    env_file: .env
+    depends_on:
+      db:
+        condition: service_healthy
+      mailpit:
+        condition: service_started
+      redis:
+        condition: service_healthy
+    ports:
+      - "18081:80"
+
+  admin:
+    build:
+      context: .
+      dockerfile: docker/admin/Dockerfile
+      args:
+        GIT_REF: ${GIT_REF:-main}
+        CACHEBUST: ${CACHEBUST:-unknown}
+      secrets:
+        - github_token
+    restart: unless-stopped
+    env_file: .env
+    depends_on:
+      db:
+        condition: service_healthy
+      mailpit:
+        condition: service_started
+    ports:
+      - "18082:80"
+
+volumes:
+  petra_db_data:
+
+secrets:
+  # Read-only access to secondcaesar-apps/petra-corporate-ibank for the build-time
+  # clone in docker/corefront/Dockerfile and docker/admin/Dockerfile. Sourced
+  # from GITHUB_TOKEN in .env for local verification; a real deployment should
+  # use a scoped deploy token (fine-grained PAT or deploy key), not a personal one.
+  github_token:
+    environment: GITHUB_TOKEN

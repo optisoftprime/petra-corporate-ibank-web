@@ -1,0 +1,17 @@
+.loginbox {
+	width:600px;
+	background-color:#fff;
+	padding:10px;
+	border-radius:5px;
+	margin-top:100px;
+	font-family:arial;
+	font-size:11px;
+	color:#58595b;
+}
+input[type="text"],input[type="password"] {
+	border:2px solid #ccc;
+}
+h1 {
+	font-weight:normal;
+	font-size:16pt;
+}

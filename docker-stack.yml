@@ -1,0 +1,240 @@
+# Production deployment via `docker stack deploy` on an existing Docker Swarm —
+# NOT for local development (use docker-compose.yml for that; see
+# docs/DEPLOYMENT.md). Traefik ingress, swarm-cronjob for scheduled jobs,
+# Docker secrets rather than a plain .env file.
+#
+# Prerequisites, in order:
+#   1. Images built and pushed to GHCR (.github/workflows/build-and-push.yml
+#      does this automatically on push; see docs/DEPLOYMENT.md for a manual
+#      build if you need one).
+#   2. Every secret below created on the target Swarm BEFORE the first
+#      deploy — `docker secret create <name> -` reading from stdin, so the
+#      value never touches shell history or a file on disk. Exact commands
+#      are in docs/DEPLOYMENT.md.
+#   3. An external overlay network named `traefik-public` already existing,
+#      with Traefik already attached to it and already running on this
+#      Swarm. If this is the first app on a fresh node instead, see
+#      docs/DEPLOYMENT.md for standing up a dedicated Traefik first.
+#   4. Replace every `CHANGE-ME.example.com` below with your real hostnames
+#      before deploying — see docs/DEPLOYMENT.md.
+#
+# Deploy: docker stack deploy -c docker-stack.yml petra
+
+services:
+  corefront:
+    image: ghcr.io/secondcaesar-apps/petra-corefront:${TAG:-latest}
+    environment:
+      DB_HOST: db
+      DB_PORT: "3306"
+      DB_NAME: dbPetra
+      DB_USER: petra_app
+      BANKONE_INST_ID: "100517"
+      SMTP_HOST: mail.petramfbank.com
+      SMTP_PORT: "465"
+      SMTP_USERNAME: onlinebanking@petramfbank.com
+      SMTP_SECURE: ssl
+      SMTP_AUTH: "1"
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      SESSION_TTL: "3600"
+    secrets:
+      - db_password
+      - bankone_api_key
+      - smtp_password
+      - redis_password
+    networks:
+      - traefik-public
+      - petra-internal
+    deploy:
+      replicas: 2
+      update_config:
+        order: start-first
+        failure_action: rollback
+      restart_policy:
+        condition: on-failure
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.services.petra-corefront.loadbalancer.server.port=80"
+        - "traefik.http.routers.petra-corefront.rule=Host(`api.CHANGE-ME.example.com`)"
+        - "traefik.http.routers.petra-corefront.entrypoints=websecure"
+        - "traefik.http.routers.petra-corefront.tls.certresolver=letsencrypt"
+
+  admin:
+    image: ghcr.io/secondcaesar-apps/petra-admin:${TAG:-latest}
+    environment:
+      DB_HOST: db
+      DB_PORT: "3306"
+      DB_NAME: dbPetra
+      DB_USER: petra_app
+      BANKONE_INST_ID: "100517"
+      SMTP_HOST: mail.petramfbank.com
+      SMTP_PORT: "465"
+      SMTP_USERNAME: onlinebanking@petramfbank.com
+      SMTP_SECURE: ssl
+      SMTP_AUTH: "1"
+    secrets:
+      - db_password
+      - bankone_api_key
+      - smtp_password
+    networks:
+      - traefik-public
+      - petra-internal
+    deploy:
+      replicas: 1
+      update_config:
+        order: start-first
+        failure_action: rollback
+      restart_policy:
+        condition: on-failure
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.services.petra-admin.loadbalancer.server.port=80"
+        - "traefik.http.routers.petra-admin.rule=Host(`admin.CHANGE-ME.example.com`)"
+        - "traefik.http.routers.petra-admin.entrypoints=websecure"
+        - "traefik.http.routers.petra-admin.tls.certresolver=letsencrypt"
+
+  # Runs the outflow cron once, via swarm-cronjob below, instead of
+  # continuously the way Scripts/jobs.sh does locally. replicas: 0 means
+  # this service never starts on its own -- swarm-cronjob creates a one-off
+  # task from it on schedule. Same image as `admin` (the cron script lives
+  # inside it already); command: overrides apache2-foreground, but the
+  # entrypoint-secrets.sh chain still runs first, so this gets the same
+  # DB/BankOne credentials the web-facing admin service does.
+  outflow-cron:
+    image: ghcr.io/secondcaesar-apps/petra-admin:${TAG:-latest}
+    command: ["php", "/var/www/admin/crons/crons.outflow.php"]
+    environment:
+      DB_HOST: db
+      DB_PORT: "3306"
+      DB_NAME: dbPetra
+      DB_USER: petra_app
+      BANKONE_INST_ID: "100517"
+    secrets:
+      - db_password
+      - bankone_api_key
+    networks:
+      - petra-internal
+    deploy:
+      replicas: 0
+      labels:
+        swarm.cronjob.enable: "true"
+        swarm.cronjob.schedule: "@every 30s"
+        swarm.cronjob.skip-running: "true"
+
+  # The swarm-cronjob manager itself -- watches for services labelled
+  # swarm.cronjob.enable and triggers them on their schedule. One per
+  # Swarm, not one per app; if this Swarm already runs swarm-cronjob for
+  # another stack, don't deploy a second instance, just add the labels
+  # above to outflow-cron and skip this service block entirely.
+  swarm-cronjob:
+    image: crazymax/swarm-cronjob
+    environment:
+      TZ: Africa/Lagos
+      LOG_LEVEL: info
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    # Only talks to the Docker socket, not to any other service -- but Swarm
+    # mode has no declarative "no networks" option, and leaving this unset
+    # makes Compose/Swarm fall back to an implicit per-stack default network
+    # (named "<stack>_default"), which on a host that's ever run this same
+    # tree via docker-compose collides with docker-compose's own default
+    # network of the same name (different driver requirements: bridge vs.
+    # overlay). Attaching explicitly to the already-declared overlay network
+    # avoids that entirely.
+    networks:
+      - petra-internal
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+
+  # NOTE: unlike docker-compose.yml, this service mounts NO schema. Against a
+  # fresh volume it comes up with an empty `dbPetra` and the app will fail on
+  # its first query. Restore a real database into the volume (or load the
+  # schema by hand) before pointing traffic at this stack -- and note that
+  # `dbCredits`, which loans.php's get_loan_details reads, is not created by
+  # anything in this repository at all. See docs/DEPLOYMENT.md.
+  #
+  # MYSQL_ROOT_PASSWORD_FILE uses db_root_password -- root's own credential,
+  # never handed to the app containers. init-app-user.sh (mounted below via a
+  # Swarm config, runs once against an empty data directory same as every
+  # other docker-entrypoint-initdb.d script here) uses it once to provision
+  # a scoped `petra_app` user with the db_password secret instead -- the one
+  # corefront/admin/outflow-cron actually authenticate as, so the app tier
+  # never needs root access to the database.
+  db:
+    image: mariadb:10.5
+    environment:
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
+      MYSQL_DATABASE: dbPetra
+    secrets:
+      - db_root_password
+      - db_password
+    configs:
+      - source: db_init_app_user
+        target: /docker-entrypoint-initdb.d/01-init-app-user.sh
+        mode: 0555
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - petra-internal
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      restart_policy:
+        condition: on-failure
+
+  redis:
+    image: redis:7-alpine
+    command: ["sh", "-c", "redis-server --requirepass \"$$(cat /run/secrets/redis_password)\""]
+    secrets:
+      - redis_password
+    volumes:
+      - redis_data:/data
+    networks:
+      - petra-internal
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      restart_policy:
+        condition: on-failure
+
+secrets:
+  db_root_password:
+    external: true
+  db_password:
+    external: true
+  bankone_api_key:
+    external: true
+  smtp_password:
+    external: true
+  redis_password:
+    external: true
+
+configs:
+  db_init_app_user:
+    file: ./docker/db/init-app-user.sh
+
+networks:
+  traefik-public:
+    external: true
+  petra-internal:
+    driver: overlay
+    attachable: false
+
+volumes:
+  # Named without a "petra_" prefix deliberately: Docker qualifies every
+  # resource as "<stack-or-project-name>_<this-key>", and docker-compose.yml
+  # (local dev)'s own volume key IS "petra_db_data" -- if this key repeated
+  # that prefix, deploying this stack as "petra" (the name every doc/example
+  # here uses) would resolve to the exact same volume name as docker
+  # compose's project "petra" produces, and the two would silently share
+  # one MariaDB data directory. They're separate stacks for separate
+  # purposes (this is production-shaped, compose is local verification) and
+  # must never share storage.
+  db_data:
+  redis_data:

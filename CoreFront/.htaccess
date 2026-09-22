@@ -1,0 +1,11 @@
+Options -MultiViews
+RewriteEngine On
+RewriteRule ^user/(.*)$ user.php?action=$1
+RewriteRule ^transfer/(.*)$ transfer.php?action=$1
+RewriteRule ^account/(.*)$ account.php?action=$1
+RewriteRule ^customer/(.*)$ customer.php?action=$1
+RewriteRule ^loans/(.*)$ loans.php?action=$1
+RewriteRule ^investments/(.*)$ investments.php?action=$1
+RewriteRule ^utils/(.*)$ utils.php?action=$1 
+RewriteRule ^receipt/(.*)$ receipt.php?PaymentReference=$1 
+

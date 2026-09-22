@@ -1,0 +1,29 @@
+# --- Secrets / environment ---
+# Real credentials live here. Never commit these.
+.env
+.env.*
+!.env.example
+
+# --- Database dumps ---
+# Database/all.sql contains real customer PII (emails, mobile numbers) and bcrypt/session
+# hashes. Keep it out of version control entirely; a sanitized, data-free schema reference
+# belongs in docs/DATABASE.md instead.
+Database/all.sql
+Database/*.sql
+!Database/*.schema.sql
+
+# --- Dependencies (none vendored via a package manager yet, reserved for when they are) ---
+/vendor/
+/node_modules/
+
+# --- OS / editor cruft ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- Logs / local runtime artifacts ---
+*.log
+/logs/

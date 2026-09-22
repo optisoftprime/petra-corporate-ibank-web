@@ -1,0 +1,458 @@
+@CHARSET "UTF-8";
+body {
+	background-color:#ddbcab;
+	font-size:10px;
+}
+div#salesgraph {
+	height:400px;
+}
+
+#drop{
+	border:2px dashed #bbb;
+	border-radius:5px;
+	border-radius:5px;
+	padding:25px;
+	text-align:center;
+	font:20pt bold,"arial";color:#bbb
+}
+.wrapper {
+	padding:10px;
+}
+
+p.customer-info-statement {
+	cursor:pointer;
+	font-weight:bold;
+}
+p.customer-info-statement:hover {
+	text-decoration:underline;
+}
+
+a.ledger_head {
+	cursor:pointer;
+	color:#58595b;
+    text-decoration: none;
+}
+a.ledger_head:hover {
+	text-decoration: none;
+}
+
+span.small_text {
+	padding-left:20px;
+	font-size: 9px;
+}
+
+div.alertOverlay {
+	position:fixed;
+	width:100%;
+	height:100%;
+	top:0px;
+	left:0px;
+	z-index:10000;
+	background-color:#000;
+}
+div.approval-loan-application,div.repayment-details-form {
+	position:absolute;
+	background-color:#fff;
+	margin:10px;
+	padding:10px;
+	border-radius:5px;
+	top:5%;
+	left:20%;
+	z-index:10001;
+	font-family:arial;
+	font-size:11px;
+	color:#666;
+	min-width: 50%;
+	min-height: 60%;
+}
+
+div.approval-loan-application ul {
+	margin:0px;
+	padding:0px;
+}
+
+div.approval-loan-application li {
+	float:left;
+	padding:0px;
+	list-style:none;
+	margin:0px;
+}
+
+div.alert {
+	position:absolute;
+	margin-left:-150px;
+	min-width:500px;
+	display:flex-grow;
+	background-color:#fff;
+	border-radius:5px;
+	padding:10px;
+	z-index:10001;
+	left:50%;
+	top:20%;
+	color:#666;
+	font-family:arial;
+	font-size:12px;
+}
+div.alert a {
+	text-decoration:none;
+	font-weight:bold;
+}
+div.alert span {
+	font-weight:bold;
+	font-size:13px;
+	color:#666;
+	text-transform:uppercase;
+}
+
+div.main {
+	overflow-x: hidden;
+}
+
+div.main-content-space {
+	overflow-x: hidden;
+	width:100%;
+	padding:10px;
+}
+
+div.module-content h1,div.approval-loan-application h1 {
+	font-size:16pt;
+	margin:0px;
+	padding:0px;
+	font-weight:normal;
+}
+
+div.module {
+	margin-bottom:15px;
+}
+div.module .module-title {
+	border-radius:5px 5px 0px 0px;
+	padding:15px;
+	color:#fff;
+	font-size:11pt;
+	background-color:#294392; 
+}
+div.module .module-content {
+	font-size:11px;
+	color:#58595b;
+	background-color:#fff;
+	border-radius:0px 0px 5px 5px;
+}
+
+div.content {
+	padding:10px;
+	border-radius: 5px;
+	background-color: #fff;
+  overflow: auto;
+}
+div.module .module-footer ul li {
+	list-style:none;
+	background-color:#f6f1ed;
+	border-right:1px solid #fff;
+	width:33.25%;
+	text-align:center;
+	float:left;
+	text-transform:uppercase;
+	font-size:13px;
+	color:#b1a599;
+}
+div.content .formMenuSection ul{
+	padding:0px;
+	margin:0px;
+}
+div.content .formMenuSection ul li{
+	float:left;
+	padding:7px;
+	padding-left:15px;
+	padding-right:15px;
+	line-height:1.5;
+	font-size:14px;
+	list-style:none;
+	font-family: IkasType;
+	font-weight: 500;
+	line-height: 1.5;
+	cursor:pointer;
+	margin-right:4px;
+}
+
+div.content .formMenuSection ul li.selected{
+	font-family: IkasType;
+	font-weight: 500;
+	line-height: 1.5;
+	font-size: 14px;
+	border-bottom:3px solid #294392;
+	color:#294392;
+}
+
+div.formContentLinkTabs ul {
+	padding:0px;
+	margin:0px;
+}
+
+div.formContentLinkTabs ul li {
+	float:left;
+	padding:7px;
+	padding-left:15px;
+	padding-right:15px;
+	line-height:20px;
+	font-size:14px;
+	list-style:none;
+	color:#fff;
+	cursor:pointer;
+	background-color:#ccc;
+	margin-right:4px;
+	border:1px solid #ccc;
+	border-bottom:0px;
+	border-radius:5px 5px 0px 0px;
+}
+
+div.formContentLinkTabs ul li.selected { 
+	background-color:#fff;
+	color:#8d7f72;
+	border:1px solid #ccc;
+	border-bottom:0px;
+}
+
+input, textarea,select {
+	font-size:11px;
+	padding:5px;
+	border:1px solid #ccc;
+}
+
+div.content .formContent {
+	background-color:#fff;
+	font-size:11px;
+	color:#666;
+	padding:10px;
+	border-radius:0px 5px 5px 5px;
+}
+table.listing {
+	background-color:#ccc;
+	border-collapse: separate;
+}
+table.listing th {
+    background-color: #eff3f9;
+    color: #666666;
+    cursor: pointer;
+    font-weight: bold;
+    height: 31px;
+    padding-left:9px;
+    line-height: 1.5;
+}
+table.listing td {
+    padding: 2px 4px 2px 5px;
+	background-color:#fff; 
+	font-size:12px;
+}
+table.listing tr {
+	height: 30px;
+	background-color:#ccc; 
+}
+
+table.listing tr.highlight td {
+	height: 30px;
+	background-color:#efefef; 
+}
+
+
+table.listing tr.alt {
+	background: none repeat scroll 0 0 #F5F5F5;
+}
+#details-lookup-content,#cardsrequested-lookup-content,#cardshotlisted-lookup-content,#topup-application-content,#amortization-report-content,#deposit-report-content,#expense-report-content,#call-report-content,#payments-lookup-content,#customer-lookup-content,#loans-lookup-content,#approvals-lookup-content,#disbursement-lookup-content,#statement-lookup-content,#posloan-application-content,#generate-posloan-report,#post-repayments-content,#txn-report-content,#account-officer-report-content,#generate-gl-report,#bvn-lookup-content {
+	margin-top:15px;
+	padding:10px;
+}
+.filter {
+	max-width:700px;
+}
+.filter hr,div.alert hr,div.approval-loan-application hr {
+	background: url("../images/filter_top_line.png") no-repeat scroll 0 0 transparent;
+    clear: both;
+    height: 4px;
+    border: 0 none;
+    position: relative;
+    top: 3px;
+    width:100%;
+    margin: 25px 0 0;
+}
+
+span.highlight {
+	color:#294392;
+} 
+
+div.alert hr {
+	margin-top:5px;
+}
+
+div.loan-repayment-schedule {
+	display:none;
+	padding:1px;
+}
+.filter-wrapper {
+	-moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    border-image: none;
+    border-radius: 0 0 5px 5px;
+    border-style: none solid solid;
+    border-width: medium 1px 1px;
+    box-shadow: 0 5px 13px 0 rgba(102, 102, 102, 0.3);
+    color: #999999;
+    width:95%;
+    display: inline-block;
+    margin: 0;
+    transition: height 0.5s ease 0s;
+    padding: 0;
+    vertical-align: baseline;
+}
+.green-button-small{
+	background-color:#19d82b;
+    border-radius: 5px;
+    color: #FFFFFF;
+    display: inline-block;
+    font: 500 11px/25px arial;
+    padding:7px;
+	margin:4px;
+    text-align: center;
+    line-height:15px;
+    cursor:pointer;
+    text-decoration: none;
+}
+.blue-button-small{
+	background-color:#114a98;
+    border-radius: 5px;
+    color: #FFFFFF;
+    display: inline-block;
+    font: 500 11px/25px arial;
+    padding:7px;
+    text-align: center;
+    line-height:15px;
+    cursor:pointer;
+    text-decoration: none;
+}
+.green-button {
+	background-color:#19d82b;
+    border-radius: 5px;
+    width:85px;
+    color: #FFFFFF;
+    display: inline-block;
+    font: 500 12px/25px arial;
+    padding:1px;
+    text-align: center;
+    line-height:26px;
+    cursor:pointer;
+    text-decoration: none;
+}
+ul.text-files-list {
+	padding:0px;
+	margin:0px;
+}
+
+ul.text-files-list li {
+	background-image:url('../icons/cbs_txt.png');
+	background-position:left middle;
+	background-repeat:no-repeat;
+	display:inline-block;
+	padding-left:16px;
+	margin-left:5px;
+	height:32px;
+}
+
+ul.text-files-list li a {
+	font-weight:bold;
+	text-decoration:none;
+	color:#666;
+	text-transform:uppercase;
+}
+
+.red-button-small{
+	background-color: #c02f2f;
+    border-radius: 5px;
+    color: #FFFFFF;
+    display: inline-block;
+    font: 500 11px/25px arial;
+    padding:7px;
+    text-align: center;
+    line-height:15px;
+    cursor:pointer;
+    text-decoration: none;
+}
+
+.grey-button-small{
+	background-color:#666;
+    border-radius: 5px;
+    color: #FFFFFF;
+    display: inline-block;
+    font: 500 11px/25px arial;
+    padding:7px;
+    text-align: center;
+    line-height:15px;
+    cursor:pointer;
+    text-decoration: none;
+}
+
+.row-striped:nth-of-type(odd){
+	background-color: #efefef;
+	border-left: 4px #000000 solid;
+  }
+  
+  .row-striped:nth-of-type(even){
+	background-color: #ffffff;
+	border-left: 4px #efefef solid;
+  }
+  
+  .row-striped {
+	  padding: 5px 0;
+  }
+
+   /* Chat containers */
+.container {
+	border: 2px solid #dedede;
+	background-color: #436ad6;
+	border-radius: 10px;
+	padding: 10px;
+	margin: 10px 0;
+  }
+  
+  /* Darker chat container */
+  .darker {
+	border-color: rgb(247, 215, 215);
+	background-color: rgb(147, 185, 176);
+  }
+  
+  /* Clear floats */
+  .container::after {
+	content: "";
+	clear: both;
+	display: table;
+  }
+  
+  /* Style images */
+  .container img {
+	float: left;
+	max-width: 60px;
+	height: 40px;
+	width: 40px;
+	width: 100%;
+	margin-right: 20px;
+	border-radius: 50%;
+  }
+  
+  /* Style the right image */
+  .container img.right {
+	float: right;
+	margin-left: 20px;
+	margin-right:0;
+  }
+  
+  /* Style time text */
+  .time-right {
+	float: right;
+	color: rgb(252, 246, 246);
+  }
+  
+  /* Style time text */
+  .time-left {
+	float: left;
+	color: #999;
+  } 
