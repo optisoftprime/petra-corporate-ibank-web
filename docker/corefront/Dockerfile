@@ -51,7 +51,7 @@ ARG CACHEBUST=unknown
 RUN --mount=type=secret,id=github_token \
     echo "Building from commit: $CACHEBUST" && \
     git clone --depth 1 --branch "$GIT_REF" \
-        "https://x-access-token:$(cat /run/secrets/github_token)@github.com/secondcaesar-apps/petra-corporate-ibank.git" \
+        "https://x-access-token:$(cat /run/secrets/github_token)@github.com/optisoftprime/petra-corporate-ibank-web.git" \
         /tmp/petra-src \
     && cp -a /tmp/petra-src/CoreFront/. /var/www/html/ \
     && rm -rf /tmp/petra-src
