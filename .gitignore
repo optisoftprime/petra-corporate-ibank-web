@@ -23,7 +23,7 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
-github_token.txt
+# github_token.txt
 all.sql
 
 # --- Logs / local runtime artifacts ---
