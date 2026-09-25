@@ -30,3 +30,4 @@ all.sql
 *.log
 /logs/
 
+github_token.txt
