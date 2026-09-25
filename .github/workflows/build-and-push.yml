@@ -51,7 +51,7 @@ jobs:
       - uses: docker/metadata-action@v5
         id: meta
         with:
-          images: ghcr.io/secondcaesar-apps/petra-${{ matrix.image }}
+          images: ghcr.io/optisoftprime/petra-${{ matrix.image }}
           tags: |
             type=ref,event=branch
             type=ref,event=tag
